@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Template Generator</title>
+    <style>
+        /* Overall Body Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(120deg, #a1c4fd, #c2e9fb); /* Soft Blue Gradient Background */
+            color: #333;
+        }
+
+        /* Container Box Styling */
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: linear-gradient(135deg, #f1f2f6, #dfe4ea); /* Light gradient for form */
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Title Styling */
+        h1 {
+            text-align: center;
+            font-size: 30px;
+            margin-bottom: 25px;
+            color: #2f3640; /* Deep Gray for Text */
+            letter-spacing: 1px;
+        }
+
+        /* Input Field Styling */
+        input, select, button {
+            display: block;
+            width: 85%; /* Resized width */
+            margin: 15px auto;
+            padding: 14px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Focus Effect for Inputs */
+        input:focus, select:focus {
+            border-color: #6c5ce7;
+            outline: none;
+            box-shadow: 0 0 8px rgba(108, 92, 247, 0.6);
+        }
+
+        /* Button Styling */
+        button {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b); /* Soft Gradient for Button */
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            border: none;
+            width: 90%;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #feb47b, #ff7e5f); /* Inverse Gradient on Hover */
+            transform: translateY(-3px);
+        }
+
+        /* Output Section Styling */
+        .output {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .output img {
+            max-width: 100%;
+            margin: 10px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Template Generator</h1>
+        <form id="generateForm">
+            <input type="text" id="companyName" placeholder="Enter Company Name" required>
+            <input type="text" id="font" placeholder="Enter Font Style" required>
+            <input type="number" id="size" placeholder="Enter Font Size (px)" required>
+            <input type="number" id="templateHeight" placeholder="Template Height (px)" required>
+            <input type="number" id="templateWidth" placeholder="Template Width (px)" required>
+            <input type="text" id="background" placeholder="Background Color" required>
+            <input type="text" id="product" placeholder="Product Name" required>
+            <input type="number" id="numImages" placeholder="Number of Images" required>
+            <button type="submit">Generate Images</button>
+        </form>
+        <div class="output" id="output"></div>
+    </div>
+
+    <script>
+        document.getElementById('generateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                company_name: document.getElementById('companyName').value,
+                font: document.getElementById('font').value,
+                size: document.getElementById('size').value,
+                template_height: document.getElementById('templateHeight').value,
+                template_width: document.getElementById('templateWidth').value,
+                background: document.getElementById('background').value,
+                product: document.getElementById('product').value,
+                num_images: document.getElementById('numImages').value
+            };
+
+            const response = await fetch('/generate-images', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            const output = document.getElementById('output');
+            output.innerHTML = '';
+
+            result.images.forEach(image => {
+                const img = document.createElement('img');
+                img.src = `/${image}`;
+                output.appendChild(img);
+            });
+        });
+    </script>
+</body>
+</html>
